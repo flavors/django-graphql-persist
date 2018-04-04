@@ -118,44 +118,44 @@ The server needs to do **less processing** to parse the query and verify the par
 Settings
 --------
 
-Here's a list of settings available in *Django-graphql-persist* and their default values.
+Here's a **list of settings** available in *Django-graphql-persist* and their default values.
 
-DOCUMENTS_DIRS
+**DOCUMENTS_DIRS**
 
 ::
 
     List of directories searched for GraphQL SDL definitions
     Default: None 
 
-CACHE_NAME
+**CACHE_NAME**
 
 ::
 
     This selects the cache to use.
     Default: 'default'
 
-CACHE_TIMEOUT
+**CACHE_TIMEOUT**
 
 ::
 
     The timeout, in seconds, to use for the cache (infinite by default).
     Default: None
 
-KEY_PREFIX
+**KEY_PREFIX**
 
 ::
 
     A string that will be automatically prepended to all cache keys used for persisted queries.
     Default: 'persist'
 
-CACHE_KEY_HANDLER
+**CACHE_KEY_HANDLER**
 
 ::
 
     ...
     Default: lambda document_id, request: document_id
 
-PERSISTED_RESPONSE_HANDLER
+**PERSISTED_RESPONSE_HANDLER**
 
 ::
 
