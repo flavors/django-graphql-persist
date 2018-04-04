@@ -1,5 +1,7 @@
 import json
 
+from django.utils.encoding import force_text
+
 from graphene_django.views import GraphQLView
 
 from .cache import get_persisted_query
@@ -27,7 +29,7 @@ class PersistMiddleware(object):
                 request.content_type == 'application/json':
 
             try:
-                data = json.loads(request.body)
+                data = json.loads(force_text(request.body))
             except json.JSONDecodeError:
                 """"JSON Decode Error"""
             else:
