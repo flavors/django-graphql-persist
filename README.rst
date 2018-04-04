@@ -175,5 +175,5 @@ PERSISTED_RESPONSE_HANDLER
 .. |Codecov| image:: https://img.shields.io/codecov/c/github/flavors/django-graphql-persist.svg
    :target: https://codecov.io/gh/flavors/django-graphql-persist
 
-.. |Code Climate| image:: https://api.codeclimate.com/v1/badges/.../maintainability
+.. |Code Climate| image:: https://api.codeclimate.com/v1/badges/46eaf45a95441d5470a4/maintainability
    :target: https://codeclimate.com/github/flavors/django-graphql-persist
