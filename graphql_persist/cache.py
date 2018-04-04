@@ -1,7 +1,7 @@
 import os
 
-from django.core.cache import caches
 from django.core.cache import cache as default_cache
+from django.core.cache import caches
 from django.core.cache.backends.base import InvalidCacheBackendError
 
 from .settings import persist_settings
