@@ -146,7 +146,7 @@ KEY_PREFIX
 ::
 
     A string that will be automatically prepended to all cache keys used for persisted queries.
-    Default: persist
+    Default: 'persist'
 
 CACHE_KEY_HANDLER
 
