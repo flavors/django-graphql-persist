@@ -145,15 +145,15 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
 
 ::
 
-    ...
+    A custom function to generate the persisted query key
     Default: lambda query_id, request: query_id
 
-**PERSISTED_RESPONSE_HANDLER**
+**DEFAULT_RENDERER_CLASSES**
 
 ::
 
-    ...
-    Default: None
+    A list or tuple of renderer classes, that determines the default set of renderers that may be used when returning a persisted query response.
+    Default: ()
 
 
 .. |Pypi| image:: https://img.shields.io/pypi/v/django-graphql-persist.svg
