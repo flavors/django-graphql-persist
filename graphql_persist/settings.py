@@ -7,7 +7,6 @@ DEFAULTS = {
     'DOCUMENTS_DIRS': (),
     'CACHE_NAME': 'default',
     'CACHE_TIMEOUT': None,
-    'CACHE_KEY_PREFIX': 'persist',
     'QUERY_KEY_HANDLER': lambda query_id, request: query_id,
     'DEFAULT_RENDERER_CLASSES': (),
 }
