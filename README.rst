@@ -134,12 +134,12 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
     This selects the cache to use.
     Default: 'default'
 
-**CACHE_TIMEOUT**
+**CACHE_TIMEOUT_HANDLER**
 
 ::
 
-    The timeout, in seconds, to use for the cache (infinite by default).
-    Default: None
+    A custom function to generate the timeout, in seconds, to use for the cache
+    Default: lambda query_key: 0 if settings.DEBUG else None
 
 **QUERY_KEY_HANDLER**
 
@@ -152,7 +152,7 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
 
 ::
 
-    A list or tuple of renderer classes, that determines the default set of renderers that may be used when returning a persisted query response.
+    A list or tuple of renderer classes that may be used when returning a persisted query response
     Default: ()
 
 

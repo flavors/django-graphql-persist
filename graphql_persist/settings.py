@@ -6,13 +6,16 @@ from django.test.signals import setting_changed
 DEFAULTS = {
     'DOCUMENTS_DIRS': (),
     'CACHE_NAME': 'default',
-    'CACHE_TIMEOUT': None,
-    'QUERY_KEY_HANDLER': lambda query_id, request: query_id,
+    'QUERY_KEY_HANDLER':
+    lambda query_id, request: query_id,
+    'CACHE_TIMEOUT_HANDLER':
+    lambda query_key: 0 if settings.DEBUG else None,
     'DEFAULT_RENDERER_CLASSES': (),
 }
 
 IMPORT_STRINGS = (
     'QUERY_KEY_HANDLER',
+    'CACHE_TIMEOUT_HANDLER',
     'DEFAULT_RENDERER_CLASSES',
 )
 

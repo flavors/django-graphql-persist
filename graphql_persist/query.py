@@ -25,7 +25,7 @@ def get_file_key(document_dir, dirpath, filename):
 def get_query(query_key, dirpath, filename):
     with open(os.path.join(dirpath, filename)) as file:
         query = file.read()
-        cache_timeout = persist_settings.CACHE_TIMEOUT
+        cache_timeout = persist_settings.CACHE_TIMEOUT_HANDLER(query_key)
         cache.set(query_key, query, timeout=cache_timeout)
         return query
 
