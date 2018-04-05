@@ -15,14 +15,6 @@ except (InvalidCacheBackendError, ValueError):
 __all__ = ['get_persisted_query']
 
 
-def get_cache_key(key):
-    return ':'.join((persist_settings.CACHE_KEY_PREFIX, key))
-
-
-def get_query_key(query_id, request):
-    return persist_settings.QUERY_KEY_HANDLER(query_id, request)
-
-
 def get_file_key(document_dir, dirpath, filename):
     return ':'.join((
         os.path.relpath(dirpath, document_dir).replace('/', ':'),
@@ -34,13 +26,13 @@ def get_query(query_key, dirpath, filename):
     with open(os.path.join(dirpath, filename)) as file:
         query = file.read()
         cache_timeout = persist_settings.CACHE_TIMEOUT
-        cache.set(get_cache_key(query_key), query, timeout=cache_timeout)
+        cache.set(query_key, query, timeout=cache_timeout)
         return query
 
 
 def get_persisted_query(query_id, request):
-    query_key = get_query_key(query_id, request)
-    query = cache.get(get_cache_key(query_key), None)
+    query_key = persist_settings.QUERY_KEY_HANDLER(query_id, request)
+    query = cache.get(query_key, None)
 
     if query is None:
         for document_dir in persist_settings.DOCUMENTS_DIRS:

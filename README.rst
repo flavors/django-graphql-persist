@@ -141,13 +141,6 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
     The timeout, in seconds, to use for the cache (infinite by default).
     Default: None
 
-**KEY_PREFIX**
-
-::
-
-    A string that will be automatically prepended to all cache keys used for persisted queries.
-    Default: 'persist'
-
 **QUERY_KEY_HANDLER**
 
 ::
