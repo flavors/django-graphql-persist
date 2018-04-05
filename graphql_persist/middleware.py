@@ -1,4 +1,5 @@
 import json
+from collections import OrderedDict
 
 from django.utils.encoding import force_text
 
@@ -12,14 +13,16 @@ class PersistMiddleware(object):
 
     def __init__(self, get_response):
         self.get_response = get_response
-        self.document_id = None
+        self.renderers = self.get_renderers()
 
     def __call__(self, request):
         response = self.get_response(request)
-        response_handler = persist_settings.PERSISTED_RESPONSE_HANDLER
 
-        if self.document_id is not None and response_handler is not None:
-            response_handler(request, response, self.document_id)
+        if (response.status_code == 200 and
+                hasattr(request, 'query_id') and
+                self.renderers):
+
+            self.render(request, response)
 
         return response
 
@@ -33,14 +36,34 @@ class PersistMiddleware(object):
             except json.JSONDecodeError:
                 """"JSON Decode Error"""
             else:
-                document_id = data.get('id', data.get('operationName'))
+                query_id = data.get('id', data.get('operationName'))
 
-                if not data.get('query') and document_id:
-                    query = get_persisted_query(document_id, request)
+                if not data.get('query') and query_id:
+                    query = get_persisted_query(query_id, request)
 
                     if query is not None:
                         data['query'] = query
                         request._body = json.dumps(data).encode()
-                        self.document_id = document_id
+                        request.query_id = query_id
 
         return None
+
+    def get_renderers(self):
+        renderer_classes = persist_settings.DEFAULT_RENDERER_CLASSES
+        return [renderer() for renderer in renderer_classes]
+
+    def render(self, request, response):
+        content = force_text(response.content, encoding=response.charset)
+        data = json.loads(content, object_pairs_hook=OrderedDict)
+
+        context = {
+            'request': request,
+        }
+
+        for renderer in self.renderers:
+            data = renderer.render(data, context)
+
+        response.content = json.dumps(data)
+
+        if response.has_header('Content-Length'):
+            response['Content-Length'] = str(len(content))

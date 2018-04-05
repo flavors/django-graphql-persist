@@ -4,23 +4,27 @@ from django.conf import settings
 from django.test.signals import setting_changed
 
 DEFAULTS = {
-    'DOCUMENTS_DIRS': [],
+    'DOCUMENTS_DIRS': (),
     'CACHE_NAME': 'default',
     'CACHE_TIMEOUT': None,
     'CACHE_KEY_PREFIX': 'persist',
-    'CACHE_KEY_HANDLER': lambda document_id, request: document_id,
-    'PERSISTED_RESPONSE_HANDLER': None,
+    'CACHE_KEY_HANDLER': lambda query_id, request: query_id,
+    'DEFAULT_RENDERER_CLASSES': (),
 }
 
 IMPORT_STRINGS = (
     'CACHE_KEY_HANDLER',
-    'PERSISTED_RESPONSE_HANDLER',
+    'DEFAULT_RENDERER_CLASSES',
 )
 
 
 def perform_import(value, setting_name):
-    if value is not None and isinstance(value, str):
+    if value is None:
+        return None
+    if isinstance(value, str):
         return import_from_string(value, setting_name)
+    elif isinstance(value, (list, tuple)):
+        return [import_from_string(item, setting_name) for item in value]
     return value
 
 
