@@ -8,12 +8,12 @@ DEFAULTS = {
     'CACHE_NAME': 'default',
     'CACHE_TIMEOUT': None,
     'CACHE_KEY_PREFIX': 'persist',
-    'CACHE_KEY_HANDLER': lambda query_id, request: query_id,
+    'QUERY_KEY_HANDLER': lambda query_id, request: query_id,
     'DEFAULT_RENDERER_CLASSES': (),
 }
 
 IMPORT_STRINGS = (
-    'CACHE_KEY_HANDLER',
+    'QUERY_KEY_HANDLER',
     'DEFAULT_RENDERER_CLASSES',
 )
 

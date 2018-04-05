@@ -5,7 +5,7 @@ from django.utils.encoding import force_text
 
 from graphene_django.views import GraphQLView
 
-from .cache import get_persisted_query
+from .query import get_persisted_query
 from .settings import persist_settings
 
 

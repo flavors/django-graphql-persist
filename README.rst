@@ -148,12 +148,12 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
     A string that will be automatically prepended to all cache keys used for persisted queries.
     Default: 'persist'
 
-**CACHE_KEY_HANDLER**
+**QUERY_KEY_HANDLER**
 
 ::
 
     ...
-    Default: lambda document_id, request: document_id
+    Default: lambda query_id, request: query_id
 
 **PERSISTED_RESPONSE_HANDLER**
 
