@@ -5,8 +5,16 @@ from django.utils.encoding import force_text
 
 from graphene_django.views import GraphQLView
 
+from . import exceptions
 from .query import get_persisted_query
 from .settings import persist_settings
+
+__all__ = ['PersistMiddleware']
+
+
+def get_json_data(content, **kwargs):
+    content = force_text(content, **kwargs)
+    return json.loads(content, object_pairs_hook=OrderedDict)
 
 
 class PersistMiddleware(object):
@@ -28,29 +36,31 @@ class PersistMiddleware(object):
                 hasattr(request, 'query_id') and
                 self.renderers):
 
-            self.render(request, response)
-
+            self.finalize_response(request, response)
         return response
 
     def process_view(self, request, view_func, *args):
-        if hasattr(view_func, 'view_class') and\
-                issubclass(view_func.view_class, GraphQLView) and\
-                request.content_type == 'application/json':
+        if (hasattr(view_func, 'view_class') and
+                issubclass(view_func.view_class, GraphQLView) and
+                request.content_type == 'application/json'):
 
             try:
-                data = json.loads(force_text(request.body))
+                data = get_json_data(request.body)
             except json.JSONDecodeError:
-                """"JSON Decode Error"""
-            else:
-                query_id = data.get('id', data.get('operationName'))
+                return None
 
-                if not data.get('query') and query_id:
-                    query = get_persisted_query(query_id, request)
+            query_id = data.get('id', data.get('operationName'))
 
-                    if query is not None:
-                        data['query'] = query
-                        request._body = json.dumps(data).encode()
-                        request.query_id = query_id
+            if query_id and not data.get('query'):
+                persisted_query = get_persisted_query(query_id, request)
+
+                if persisted_query is None:
+                    return exceptions.PersistedQueryNotFound()
+
+                data['query'] = persisted_query
+                request.query_id = query_id
+                request._body = json.dumps(data).encode()
+        return None
 
     def get_version(self, request):
         if self.versioning_class is not None:
@@ -61,9 +71,8 @@ class PersistMiddleware(object):
         renderer_classes = persist_settings.DEFAULT_RENDERER_CLASSES
         return [renderer() for renderer in renderer_classes]
 
-    def render(self, request, response):
-        content = force_text(response.content, encoding=response.charset)
-        data = json.loads(content, object_pairs_hook=OrderedDict)
+    def finalize_response(self, request, response):
+        data = get_json_data(response.content, encoding=response.charset)
 
         context = {
             'request': request,
@@ -75,4 +84,4 @@ class PersistMiddleware(object):
         response.content = json.dumps(data)
 
         if response.has_header('Content-Length'):
-            response['Content-Length'] = str(len(content))
+            response['Content-Length'] = str(len(response.content))
