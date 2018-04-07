@@ -1,4 +1,5 @@
 import os
+import re
 
 from django.core.cache import cache as default_cache
 from django.core.cache import caches
@@ -6,25 +7,30 @@ from django.core.cache.backends.base import InvalidCacheBackendError
 
 from .settings import persist_settings
 
+__all__ = [
+    'query_key_handler',
+    'get_persisted_query',
+]
+
 try:
     cache = caches[persist_settings.CACHE_NAME]
 except (InvalidCacheBackendError, ValueError):
     cache = default_cache
 
-
-__all__ = ['get_persisted_query']
-
-
-def get_file_key(document_dir, dirpath, filename):
-    return ':'.join((
-        os.path.relpath(dirpath, document_dir).replace('/', ':'),
-        os.path.splitext(filename)[0]),
-    )
+versioning_regex = re.compile(r'\.([a-z])', re.IGNORECASE)
 
 
-def get_query(query_key, dirpath, filename):
-    with open(os.path.join(dirpath, filename)) as file:
-        query = file.read()
+def query_key_handler(query_id, request):
+    if request.version is None:
+        return query_id
+
+    query_prefix = versioning_regex.sub(r':\1', request.version)
+    return ':'.join((query_prefix, query_id))
+
+
+def get_query(query_key, file_name):
+    with open(file_name, 'r') as document:
+        query = document.read()
         cache_timeout = persist_settings.CACHE_TIMEOUT_HANDLER(query_key)
         cache.set(query_key, query, timeout=cache_timeout)
         return query
@@ -36,12 +42,13 @@ def get_persisted_query(query_id, request):
 
     if query is None:
         for document_dir in persist_settings.DOCUMENTS_DIRS:
-            for dirpath, _, filenames in os.walk(document_dir):
-                filename = query_id + '.graphql'
+            query_keys = query_key.split(':')
 
-                if filename not in filenames:
-                    continue
+            for s in range(len(query_keys)):
+                file_keys = query_keys[:-s - 1] + query_keys[-1:]
+                file_name = os.path.join(document_dir, *file_keys)
+                file_name += persist_settings.DOCUMENTS_EXT
 
-                if query_key == get_file_key(document_dir, dirpath, filename):
-                    return get_query(query_key, dirpath, filename)
+                if os.path.isfile(file_name):
+                    return get_query(query_key, file_name)
     return query

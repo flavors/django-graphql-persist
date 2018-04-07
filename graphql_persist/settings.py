@@ -5,9 +5,9 @@ from django.test.signals import setting_changed
 
 DEFAULTS = {
     'DOCUMENTS_DIRS': (),
+    'DOCUMENTS_EXT': '.graphql',
     'CACHE_NAME': 'default',
-    'QUERY_KEY_HANDLER':
-    lambda query_id, request: query_id,
+    'QUERY_KEY_HANDLER': 'graphql_persist.query.query_key_handler',
     'CACHE_TIMEOUT_HANDLER':
     lambda query_key: 0 if settings.DEBUG else None,
     'DEFAULT_VERSIONING_CLASS': None,
@@ -23,6 +23,7 @@ DEFAULTS = {
 IMPORT_STRINGS = (
     'QUERY_KEY_HANDLER',
     'CACHE_TIMEOUT_HANDLER',
+    'DEFAULT_VERSIONING_CLASS',
     'DEFAULT_RENDERER_CLASSES',
 )
 
