@@ -1,36 +1,23 @@
-from .base import BaseRenderer
+from collections import OrderedDict
+
+from .base import BaseStripTagsRenderer
 
 __all__ = ['StripRelayTagsRenderer']
 
 
-def strip_edges(data, extra=None):
-    results = strip_relay_tags(data)
-    if not extra:
-        return results
-    extra['results'] = results
-    return extra
-
-
-def strip_relay_tags(data):
+def strip_edges(data):
     if isinstance(data, dict):
-        edges = data.pop('edges', None)
+        edges = data.get('edges')
         if edges is not None:
-            return strip_edges(edges, data)
+            if len(data) == 1:
+                return edges
+            return OrderedDict(
+                ('results', edges) if k == 'edges'
+                else (k, v) for k, v in data.items())
         elif 'node' in data:
-            return strip_relay_tags(data['node'])
-        ret = {}
-        for k, v in data.items():
-            ret[k] = strip_relay_tags(v)
-    elif isinstance(data, list):
-        ret = []
-        for v in data:
-            ret.append(strip_relay_tags(v))
-    else:
-        return data
-    return ret
+            return data['node']
+    return data
 
 
-class StripRelayTagsRenderer(BaseRenderer):
-
-    def render(self, data, context=None):
-        return strip_relay_tags(data)
+class StripRelayTagsRenderer(BaseStripTagsRenderer):
+    strip_func = staticmethod(strip_edges)
