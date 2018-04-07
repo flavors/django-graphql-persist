@@ -10,7 +10,14 @@ DEFAULTS = {
     lambda query_id, request: query_id,
     'CACHE_TIMEOUT_HANDLER':
     lambda query_key: 0 if settings.DEBUG else None,
+    'DEFAULT_VERSIONING_CLASS': None,
     'DEFAULT_RENDERER_CLASSES': (),
+
+    # Versioning
+    'DEFAULT_VERSION': None,
+    'ALLOWED_VERSIONS': None,
+    'VERSION_PARAM': 'version',
+    'MEDIA_TYPE_NAME': r'[a-zA-Z0-9]+',
 }
 
 IMPORT_STRINGS = (

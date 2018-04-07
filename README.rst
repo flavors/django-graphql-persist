@@ -125,14 +125,21 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
 ::
 
     List of directories searched for GraphQL SDL definitions
-    Default: None 
+    Default: () 
 
 **CACHE_NAME**
 
 ::
 
-    This selects the cache to use.
+    This selects the cache to use
     Default: 'default'
+
+**QUERY_KEY_HANDLER**
+
+::
+
+    A custom function to generate the persisted query key
+    Default: 'graphql_persist.query.query_key_handler'
 
 **CACHE_TIMEOUT_HANDLER**
 
@@ -141,12 +148,12 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
     A custom function to generate the timeout, in seconds, to use for the cache
     Default: lambda query_key: 0 if settings.DEBUG else None
 
-**QUERY_KEY_HANDLER**
+**DEFAULT_VERSIONING_CLASS**
 
 ::
 
-    A custom function to generate the persisted query key
-    Default: lambda query_id, request: query_id
+    A versioning class to determine the `request.version` attribute
+    Default: None
 
 **DEFAULT_RENDERER_CLASSES**
 

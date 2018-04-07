@@ -14,8 +14,14 @@ class PersistMiddleware(object):
     def __init__(self, get_response):
         self.get_response = get_response
         self.renderers = self.get_renderers()
+        self.versioning_class = persist_settings.DEFAULT_VERSIONING_CLASS
 
     def __call__(self, request):
+        try:
+            request.version = self.get_version(request)
+        except exceptions.GraphQLPersistError as err:
+            return exceptions.PersistResponseError(str(err))
+
         response = self.get_response(request)
 
         if (response.status_code == 200 and
@@ -46,6 +52,9 @@ class PersistMiddleware(object):
                         request._body = json.dumps(data).encode()
                         request.query_id = query_id
 
+    def get_version(self, request):
+        if self.versioning_class is not None:
+            return self.versioning_class().get_version(request)
         return None
 
     def get_renderers(self):
