@@ -72,7 +72,7 @@ class HostNameVersioning(BaseVersioning):
         r'^([a-z0-9]+)\.[a-z0-9]+\.[a-z0-9]+$',
         re.IGNORECASE)
 
-    def get_version(self, request, *args, **kwargs):
+    def get_version(self, request):
         hostname, separator, port = request.get_host().partition(':')
         match = self.hostname_regex.match(hostname)
 
@@ -83,5 +83,5 @@ class HostNameVersioning(BaseVersioning):
 
         if not self.is_allowed_version(version):
             raise exceptions.GraphQLPersistError(
-                _('Invalid version in hostname.'))
+                _('Invalid version in hostname'))
         return version
