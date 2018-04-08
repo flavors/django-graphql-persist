@@ -19,6 +19,16 @@ class PersistResponseError(JsonResponse):
         })
 
 
-class PersistedQueryNotFound(PersistResponseError):
-    default_message = _('Persisted query not found')
+class DocumentNotFound(PersistResponseError):
     status_code = 404
+
+    def __init__(self, query_key):
+        message = _('Document `{}` not found').format(query_key)
+        return super().__init__(message)
+
+
+class DocumentSyntaxError(PersistResponseError):
+
+    def __init__(self, query_key):
+        message = _('Syntax Error on `{}`').format(query_key)
+        return super().__init__(message)
