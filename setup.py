@@ -32,6 +32,7 @@ setup(
     install_requires=[
         'Django>=1.11',
         'graphene-django>=2.0.0',
+        'requests',
     ],
     classifiers=[
         'Development Status :: 1 - Planning',
@@ -53,5 +54,6 @@ setup(
     tests_require=[
         'Django>=1.11',
         'graphene-django>=2.0.0',
+        'requests',
     ],
 )
