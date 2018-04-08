@@ -7,7 +7,7 @@ from . import exceptions
 from .settings import persist_settings
 
 
-class BaseVersioning(object):
+class BaseVersioning:
     default_version = persist_settings.DEFAULT_VERSION
     allowed_versions = persist_settings.ALLOWED_VERSIONS
 

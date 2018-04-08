@@ -17,13 +17,13 @@ def strip_tags(data, f):
     return data
 
 
-class BaseRenderer(object):
+class BaseRenderer:
 
     def render(self, data, context=None):
         raise NotImplementedError('.render() must be implemented')
 
 
-class BaseStripTagsRenderer(object):
+class BaseStripTagsRenderer:
 
     def render(self, data, context=None):
         assert hasattr(self, 'strip_func'), (

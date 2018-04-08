@@ -17,7 +17,7 @@ def get_json_data(content, **kwargs):
     return json.loads(content, object_pairs_hook=OrderedDict)
 
 
-class PersistMiddleware(object):
+class PersistMiddleware:
 
     def __init__(self, get_response):
         self.get_response = get_response
