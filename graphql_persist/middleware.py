@@ -6,7 +6,8 @@ from django.utils.encoding import force_text
 from graphene_django.views import GraphQLView
 
 from . import exceptions
-from .query import get_persisted_query
+from .loaders import CachedEngine
+from .loaders.exceptions import DocumentDoesNotExist, DocumentSyntaxError
 from .settings import persist_settings
 
 __all__ = ['PersistMiddleware']
@@ -21,6 +22,7 @@ class PersistMiddleware:
 
     def __init__(self, get_response):
         self.get_response = get_response
+        self.loader = CachedEngine()
         self.renderers = self.get_renderers()
         self.versioning_class = persist_settings.DEFAULT_VERSIONING_CLASS
 
@@ -33,7 +35,7 @@ class PersistMiddleware:
         response = self.get_response(request)
 
         if (response.status_code == 200 and
-                hasattr(request, 'query_id') and
+                hasattr(request, 'persisted_query') and
                 self.renderers):
 
             self.finalize_response(request, response)
@@ -52,13 +54,17 @@ class PersistMiddleware:
             query_id = data.get('id', data.get('operationName'))
 
             if query_id and not data.get('query'):
-                persisted_query = get_persisted_query(query_id, request)
+                try:
+                    document = self.loader.get_document(query_id, request)
+                except DocumentDoesNotExist as err:
+                    return exceptions.DocumentNotFound(str(err))
 
-                if persisted_query is None:
-                    return exceptions.PersistedQueryNotFound()
+                try:
+                    data['query'] = document.parse()
+                except DocumentSyntaxError as err:
+                    return exceptions.DocumentSyntaxError(str(err))
 
-                data['query'] = persisted_query
-                request.query_id = query_id
+                request.persisted_query = document
                 request._body = json.dumps(data).encode()
         return None
 

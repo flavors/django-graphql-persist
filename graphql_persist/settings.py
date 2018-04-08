@@ -8,9 +8,12 @@ DEFAULTS = {
     'DOCUMENTS_EXT': '.graphql',
     'CACHE_NAME': 'default',
     'QUERY_KEY_HANDLER': 'graphql_persist.query.query_key_handler',
-    'CACHE_TIMEOUT_HANDLER':
-    lambda query_key: 0 if settings.DEBUG else None,
     'DEFAULT_VERSIONING_CLASS': None,
+    'DEFAULT_LOADER_CLASSES': (
+        'graphql_persist.loaders.AppDirectoriesLoader',
+        'graphql_persist.loaders.FilesystemLoader',
+        'graphql_persist.loaders.URLLoader',
+    ),
     'DEFAULT_RENDERER_CLASSES': (),
 
     # Versioning
@@ -18,12 +21,15 @@ DEFAULTS = {
     'ALLOWED_VERSIONS': None,
     'VERSION_PARAM': 'version',
     'MEDIA_TYPE_NAME': r'[a-zA-Z0-9]+',
+
+    # Loaders
+    'APP_DOCUMENT_DIR': 'documents',
 }
 
 IMPORT_STRINGS = (
     'QUERY_KEY_HANDLER',
-    'CACHE_TIMEOUT_HANDLER',
     'DEFAULT_VERSIONING_CLASS',
+    'DEFAULT_LOADER_CLASSES',
     'DEFAULT_RENDERER_CLASSES',
 )
 
@@ -49,7 +55,7 @@ def import_from_string(value, setting_name):
         raise ImportError(msg)
 
 
-class PersistSettings(object):
+class PersistSettings:
 
     def __init__(self, defaults, import_strings):
         self.defaults = defaults

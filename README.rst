@@ -141,12 +141,6 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
     A custom function to generate the persisted query key
     Default: 'graphql_persist.query.query_key_handler'
 
-**CACHE_TIMEOUT_HANDLER**
-
-::
-
-    A custom function to generate the timeout, in seconds, to use for the cache
-    Default: lambda query_key: 0 if settings.DEBUG else None
 
 **DEFAULT_VERSIONING_CLASS**
 
@@ -155,11 +149,22 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
     A versioning class to determine the `request.version` attribute
     Default: None
 
+**DEFAULT_LOADER_CLASSES**
+
+::
+
+    A list of documents loader classes. Each Loader class knows how to import documents from a particular source. 
+    Default: (
+        'graphql_persist.loaders.AppDirectoriesLoader',
+        'graphql_persist.loaders.FilesystemLoader',
+        'graphql_persist.loaders.URLLoader',
+    )
+
 **DEFAULT_RENDERER_CLASSES**
 
 ::
 
-    A list or tuple of renderer classes that may be used when returning a persisted query response
+    A list of renderer classes that may be used when returning a persisted query response
     Default: ()
 
 
