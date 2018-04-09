@@ -12,6 +12,12 @@ from .settings import persist_settings
 __all__ = ['PersistMiddleware']
 
 
+class PersistedQuery(OrderedDict):
+
+    def __init__(self, document, data):
+        super().__init__(data)
+        self.__dict__ = self
+        self.document = document
 
 
 class PersistMiddleware:
@@ -61,7 +67,7 @@ class PersistMiddleware:
                 except DocumentSyntaxError as err:
                     return exceptions.DocumentSyntaxError(str(err))
 
-                request.persisted_query = document
+                request.persisted_query = PersistedQuery(document, data)
                 request._body = json.dumps(data).encode()
         return None
 
