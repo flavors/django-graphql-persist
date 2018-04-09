@@ -20,7 +20,7 @@ DEFAULTS = {
     'DEFAULT_VERSION': None,
     'ALLOWED_VERSIONS': None,
     'VERSION_PARAM': 'version',
-    'MEDIA_TYPE_NAME': r'[a-zA-Z0-9]+',
+    'MEDIA_TYPE_NAME': r'[a-z0-9]+',
 
     # Loaders
     'APP_DOCUMENT_DIR': 'documents',
