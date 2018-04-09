@@ -3,7 +3,7 @@ from .exceptions import DocumentDoesNotExist
 
 class Origin:
 
-    def __init__(self, name, query_key=None, loader=None):
+    def __init__(self, name, query_key, loader):
         self.name = name
         self.query_key = query_key
         self.loader = loader
@@ -24,7 +24,7 @@ class Document:
 
 class BaseLoader:
 
-    def __init__(self, engine, dirs=None):
+    def __init__(self, engine):
         self.engine = engine
 
     def get_document(self, query_key):

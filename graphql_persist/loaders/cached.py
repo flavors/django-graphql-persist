@@ -6,7 +6,7 @@ class CachedEngine:
     dirs = persist_settings.DOCUMENTS_DIRS
     documents_ext = persist_settings.DOCUMENTS_EXT
 
-    def __init__(self, dirs=None):
+    def __init__(self):
         self.get_document_cache = {}
         self.loaders = self.get_loaders()
 
