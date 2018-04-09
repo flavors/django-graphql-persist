@@ -21,6 +21,7 @@ class PersistMiddleware:
         self.loader = CachedEngine()
         self.renderers = self.get_renderers()
         self.versioning_class = persist_settings.DEFAULT_VERSIONING_CLASS
+        self.get_query_key = persist_settings.QUERY_KEY_HANDLER
 
     def __call__(self, request):
         try:
@@ -49,8 +50,10 @@ class PersistMiddleware:
             query_id = data.get('id', data.get('operationName'))
 
             if query_id and not data.get('query'):
+                query_key = self.get_query_key(query_id, request)
+
                 try:
-                    document = self.loader.get_document(query_id, request)
+                    document = self.loader.get_document(query_key)
                 except DocumentDoesNotExist as err:
                     return exceptions.DocumentNotFound(str(err))
                 try:

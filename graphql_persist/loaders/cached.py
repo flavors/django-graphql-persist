@@ -10,8 +10,7 @@ class CachedEngine:
         self.get_document_cache = {}
         self.loaders = self.get_loaders()
 
-    def get_document(self, query_id, request):
-        query_key = persist_settings.QUERY_KEY_HANDLER(query_id, request)
+    def get_document(self, query_key):
         document = self.get_document_cache.get(query_key)
 
         if document is None:
