@@ -4,7 +4,6 @@ from collections import OrderedDict
 from graphene_django.views import GraphQLView
 
 from . import exceptions
-from .loaders import CachedEngine
 from .loaders.exceptions import DocumentDoesNotExist, DocumentSyntaxError
 from .parser import parse_json
 from .settings import persist_settings
@@ -24,7 +23,7 @@ class PersistMiddleware:
 
     def __init__(self, get_response):
         self.get_response = get_response
-        self.loader = CachedEngine()
+        self.loader = persist_settings.DEFAULT_LOADER_ENGINE_CLASS()
         self.renderers = self.get_renderers()
         self.versioning_class = persist_settings.DEFAULT_VERSIONING_CLASS
         self.get_query_key = persist_settings.QUERY_KEY_HANDLER

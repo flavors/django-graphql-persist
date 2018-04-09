@@ -9,6 +9,7 @@ DEFAULTS = {
     'CACHE_NAME': 'default',
     'QUERY_KEY_HANDLER': 'graphql_persist.query.query_key_handler',
     'DEFAULT_VERSIONING_CLASS': None,
+    'DEFAULT_LOADER_ENGINE_CLASS': 'graphql_persist.loaders.Engine',
     'DEFAULT_LOADER_CLASSES': (
         'graphql_persist.loaders.AppDirectoriesLoader',
         'graphql_persist.loaders.FilesystemLoader',
@@ -29,6 +30,7 @@ DEFAULTS = {
 IMPORT_STRINGS = (
     'QUERY_KEY_HANDLER',
     'DEFAULT_VERSIONING_CLASS',
+    'DEFAULT_LOADER_ENGINE_CLASS',
     'DEFAULT_LOADER_CLASSES',
     'DEFAULT_RENDERER_CLASSES',
 )
