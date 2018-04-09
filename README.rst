@@ -153,7 +153,7 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
 
 ::
 
-    A list of documents loader classes to import documents from a particular source
+    A list of loader classes to import documents from a particular source
     Default: (
         'graphql_persist.loaders.AppDirectoriesLoader',
         'graphql_persist.loaders.FilesystemLoader',
