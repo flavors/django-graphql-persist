@@ -31,9 +31,5 @@ class CachedEngine:
         loader_classes = persist_settings.DEFAULT_LOADER_CLASSES
         return [loader_class(self) for loader_class in loader_classes]
 
-    def get_sources(self, query_key):
-        for loader in self.loaders:
-            yield from loader.get_sources(query_key)
-
     def reset(self):
         self.get_document_cache.clear()

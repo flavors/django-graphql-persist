@@ -23,8 +23,7 @@ class URLLoader(BaseLoader):
         return self.engine.dirs
 
     def get_sources(self, query_key):
-        document_name = query_key + self.engine.documents_ext
-        query_keys = document_name.split(':')
+        query_keys = (query_key + self.engine.documents_ext).split(':')
 
         for document_dir in self.get_dirs():
             origin_url = os.path.join(document_dir, *query_keys)
