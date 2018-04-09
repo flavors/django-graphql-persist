@@ -1,4 +1,8 @@
+from graphql.language.parser import parse
+from graphql.language.source import Source
+
 from .exceptions import DocumentDoesNotExist
+from .parser import parse_document
 
 
 class Origin:
@@ -15,11 +19,21 @@ class Origin:
 class Document:
 
     def __init__(self, source, origin=None):
-        self.source = source
+        self.source = Source(source)
         self.origin = origin
+        self.ast = parse(self.source)
 
-    def parse(self):
-        return self.source
+    def render(self):
+        return parse_document(self)
+
+    @property
+    def definitions(self):
+        if not hasattr(self, '_definitions'):
+            self._definitions = {
+                d.name.value: d.loc.source.body
+                for d in self.ast.definitions
+            }
+        return self._definitions
 
 
 class BaseLoader:

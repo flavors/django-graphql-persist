@@ -58,9 +58,8 @@ class PersistMiddleware:
                     document = self.loader.get_document(query_id, request)
                 except DocumentDoesNotExist as err:
                     return exceptions.DocumentNotFound(str(err))
-
                 try:
-                    data['query'] = document.parse()
+                    data['query'] = document.render()
                 except DocumentSyntaxError as err:
                     return exceptions.DocumentSyntaxError(str(err))
 
