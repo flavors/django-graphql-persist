@@ -124,21 +124,21 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
 
 ::
 
-    List of directories searched for GraphQL SDL definitions
+    List of directories or urls searched for GraphQL SDL definitions
     Default: () 
 
 **CACHE_NAME**
 
 ::
 
-    This selects the cache to use
+    Cache key name `CACHES[name]` to cache the queries results
     Default: 'default'
 
 **QUERY_KEY_HANDLER**
 
 ::
 
-    A custom function to generate the persisted query key
+    A custom function `f(query_id, request)` to generate the persisted query key
     Default: 'graphql_persist.query.query_key_handler'
 
 
@@ -153,7 +153,7 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
 
 ::
 
-    A list of documents loader classes. Each Loader class knows how to import documents from a particular source. 
+    A list of documents loader classes to import documents from a particular source
     Default: (
         'graphql_persist.loaders.AppDirectoriesLoader',
         'graphql_persist.loaders.FilesystemLoader',
