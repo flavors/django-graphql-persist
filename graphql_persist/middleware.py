@@ -1,21 +1,17 @@
 import json
 from collections import OrderedDict
 
-from django.utils.encoding import force_text
-
 from graphene_django.views import GraphQLView
 
 from . import exceptions
 from .loaders import CachedEngine
 from .loaders.exceptions import DocumentDoesNotExist, DocumentSyntaxError
+from .parser import parse_json
 from .settings import persist_settings
 
 __all__ = ['PersistMiddleware']
 
 
-def get_json_data(content, **kwargs):
-    content = force_text(content, **kwargs)
-    return json.loads(content, object_pairs_hook=OrderedDict)
 
 
 class PersistMiddleware:
@@ -45,9 +41,8 @@ class PersistMiddleware:
         if (hasattr(view_func, 'view_class') and
                 issubclass(view_func.view_class, GraphQLView) and
                 request.content_type == 'application/json'):
-
             try:
-                data = get_json_data(request.body)
+                data = parse_json(request.body)
             except json.JSONDecodeError:
                 return None
 
@@ -77,7 +72,7 @@ class PersistMiddleware:
         return [renderer() for renderer in renderer_classes]
 
     def finalize_response(self, request, response):
-        data = get_json_data(response.content, encoding=response.charset)
+        data = parse_json(response.content, encoding=response.charset)
 
         context = {
             'request': request,
