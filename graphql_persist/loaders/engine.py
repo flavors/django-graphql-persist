@@ -4,10 +4,10 @@ from .exceptions import DocumentDoesNotExist
 
 
 class Engine:
-    dirs = persist_settings.DOCUMENTS_DIRS
-    documents_ext = persist_settings.DOCUMENTS_EXT
 
     def __init__(self):
+        self.dirs = persist_settings.DOCUMENTS_DIRS
+        self.documents_ext = persist_settings.DOCUMENTS_EXT
         self.loaders = self.get_loaders()
 
     def get_document(self, query_key):
