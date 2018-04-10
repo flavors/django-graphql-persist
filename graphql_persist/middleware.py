@@ -9,6 +9,7 @@ from .loaders.exceptions import (
     DocumentDoesNotExist, DocumentImportError,
 )
 from .parser import parse_json
+from .query import QueryKey
 from .settings import persist_settings
 
 __all__ = ['PersistMiddleware']
@@ -29,7 +30,6 @@ class PersistMiddleware:
         self.loader = persist_settings.DEFAULT_LOADER_ENGINE_CLASS()
         self.renderers = self.get_renderers()
         self.versioning_class = persist_settings.DEFAULT_VERSIONING_CLASS
-        self.get_query_key = persist_settings.QUERY_KEY_HANDLER
 
     def __call__(self, request):
         try:
@@ -72,6 +72,9 @@ class PersistMiddleware:
                 request.persisted_query = PersistedQuery(document, data)
                 request._body = json.dumps(data).encode()
         return None
+
+    def get_query_key(self, query_id, request):
+        return QueryKey(persist_settings.QUERY_KEY_HANDLER(query_id, request))
 
     def get_version(self, request):
         if self.versioning_class is not None:

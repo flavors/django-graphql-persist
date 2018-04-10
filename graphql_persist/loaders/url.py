@@ -23,24 +23,23 @@ class URLLoader(BaseLoader):
         return self.engine.dirs
 
     def get_sources(self, query_key):
-        query_keys = (query_key + self.engine.documents_ext).split(':')
-
         for document_dir in self.get_dirs():
-            origin_url = os.path.join(document_dir, *query_keys)
+            url = os.path.join(document_dir, *query_key)
+            url += self.engine.documents_ext
 
             try:
-                URLValidator()(origin_url)
+                URLValidator()(url)
             except ValidationError:
                 continue
             try:
-                response = requests.get(origin_url)
+                response = requests.get(url)
             except requests.HTTPError:
                 continue
 
             if response.status_code == 200:
                 yield URLOrigin(
                     content=response.text,
-                    name=origin_url,
+                    name=url,
                     query_key=query_key,
                     loader=self)
 

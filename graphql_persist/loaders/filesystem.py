@@ -12,18 +12,13 @@ class FilesystemLoader(BaseLoader):
         return self.engine.dirs
 
     def get_sources(self, query_key):
-        query_keys = (query_key + self.engine.documents_ext).split(':')
-
         for document_dir in self.get_dirs():
-            for s in range(len(query_keys)):
-                origin_keys = query_keys[:-s - 1] + query_keys[-1:]
-                origin_path = safe_join(document_dir, *origin_keys)
+            for s in range(len(query_key)):
+                path = safe_join(document_dir, *query_key.qslice(-s))
+                path += self.engine.documents_ext
 
-                if os.path.isfile(origin_path):
-                    yield Origin(
-                        name=origin_path,
-                        query_key=query_key,
-                        loader=self)
+                if os.path.isfile(path):
+                    yield Origin(name=path, query_key=query_key, loader=self)
 
     def get_contents(self, origin):
         try:
