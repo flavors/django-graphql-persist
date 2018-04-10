@@ -4,7 +4,6 @@ from django.core.cache.backends.base import InvalidCacheBackendError
 
 from .settings import persist_settings
 
-
 try:
     cache = caches[persist_settings.CACHE_NAME]
 except (InvalidCacheBackendError, ValueError):
