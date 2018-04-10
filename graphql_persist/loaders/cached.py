@@ -11,7 +11,7 @@ class CachedEngine(Engine):
         document = self.get_document_cache.get(query_key)
 
         if document is None:
-            document = self.find_document(query_key)
+            document = super().get_document(query_key)
             self.get_document_cache[query_key] = document
         return document
 
