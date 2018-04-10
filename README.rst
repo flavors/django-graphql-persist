@@ -37,13 +37,30 @@ Include the ``PersistMiddleware`` middleware in your *MIDDLEWARE* settings:
     ]
 
 
-Configure the list of directories searched for GraphQL SDL definitions.
+Loaders
+-------
+
+*Django-graphql-persist* searches for documents directories in a number of places, depending on your ``DEFAULT_LOADER_CLASSES`` variable.
+
+* **AppDirectoriesLoader**
+
+Loads documents from Django apps on the filesystem. For each app in ``INSTALLED_APPS``, the loader looks for a ``documents/`` subdirectory defined by ``APP_DOCUMENT_DIR`` variable.
+
+* **FilesystemLoader**
+
+Loads documents from the filesystem, according to ``DOCUMENTS_DIRS`` variable.
+
+* **URLLoader**
+
+Loads documents from urls, according to ``DOCUMENTS_DIRS``.
+
 
 .. code:: python
 
     GRAPHQL_PERSIST = {
         'DOCUMENTS_DIRS': [
             '/app/documents',
+            'https:// ... /documents',
         ],
     }
 
@@ -51,7 +68,9 @@ Configure the list of directories searched for GraphQL SDL definitions.
 Schema definition
 -----------------
 
-**/app/documents/fields.graphql**
+You can split schemas into separate files...
+
+``/app/documents/fragments.graphql``
 
 .. code:: graphql
 
@@ -60,11 +79,13 @@ Schema definition
       email
     }
 
-**/app/documents/schema.graphql**
+and define Pythonic imports prefixed with ``#``.
+
+``/app/documents/schema.graphql``
 
 .. code:: graphql
 
-    # from fields import userFields
+    # from fragments import userFields
 
     query GetViewer {
       viewer {
@@ -93,11 +114,11 @@ Schema definition
 Operations definition
 ---------------------
 
-**/app/documents/GetViewer.graphql**
+``/app/documents/GetViewer.graphql``
 
 .. code:: graphql
 
-    # from fields import userFields
+    # from fragments import userFields
 
     query GetViewer {
       viewer {
@@ -114,6 +135,61 @@ Operations definition
       "operationName": "GetViewer",
       "variables": {}
     }
+
+
+👉 Versioning
+-------------
+
+The versioning scheme is defined by the ``DEFAULT_VERSIONING_CLASS`` setting variable.
+
+.. code:: python
+
+    GRAPHQL_PERSIST = {
+        'DEFAULT_VERSIONING_CLASS': 'graphql_persist.versioning.AcceptHeaderVersioning'
+    }
+
+This is the full **list of versioning classes**.
+
++--------------------------+-------------------------------------+
+| DEFAULT_VERSIONING_CLASS |               Example               |
++==========================+=====================================+
+|  AcceptHeaderVersioning  |  ``application/json; version=v1``   |
++--------------------------+-------------------------------------+
+|   VendorTreeVersioning   | ``application/vnd.flavors.v1+json`` |
++--------------------------+-------------------------------------+
+| QueryParameterVersioning |          ``?version=v1``            |
++--------------------------+-------------------------------------+
+|    HostNameVersioning    |         ``v1.flavors.com``          |
++--------------------------+-------------------------------------+
+
+Configure the versioning scheme and storage the GraphQL documents according to the version.
+
+👇 **Example**
+
+.. code::
+
+    POST /graphql HTTP/1.1
+    Accept: application/json; version=v1.full
+
+    {
+      "operationName": "GetViewer",
+      "variables": {}
+    }
+
+.. code::
+
+    documents/
+    |
+    ├── v1/
+    │   ├── full/
+    │   |     └── GetViewer.graphql 👈
+    │   └── basic/
+    |   |     └── GetViewer.graphql
+    |   └── fragments/
+    |         └── common.graphql
+    └── v2/
+        └── full/
+        └── basic/
 
 
 Settings
@@ -150,6 +226,14 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
     A versioning class to determine the `request.version` attribute
     Default: None
 
+**DEFAULT_LOADER_ENGINE_CLASS**
+
+::
+
+    Class that takes a list of template loaders and attempts to load templates from them in order
+    Default: 'graphql_persist.loaders.Engine'
+    Note: Set variable to 'graphql_persist.loaders.CachedEngine' for caching documents
+
 **DEFAULT_LOADER_CLASSES**
 
 ::
@@ -160,6 +244,20 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
         'graphql_persist.loaders.FilesystemLoader',
         'graphql_persist.loaders.URLLoader',
     )
+
+**APP_DOCUMENT_DIR**
+
+::
+
+    Subdirectory of installed applications for searches documents
+    Default: 'documents'
+
+**DOCUMENTS_EXT**
+
+::
+
+    GraphQL document file extension
+    Default: '.graphql'
 
 **DEFAULT_RENDERER_CLASSES**
 
