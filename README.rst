@@ -51,9 +51,27 @@ Configure the list of directories searched for GraphQL SDL definitions.
 Schema definition
 -----------------
 
+**/app/documents/fields.graphql**
+
+.. code:: graphql
+
+    query GetViewer {
+      viewer {
+        ...userFields
+      }
+    }
+
+    query GetUsers {
+      users {
+        ...userFields
+      }
+    }
+
 **/app/documents/schema.graphql**
 
 .. code:: graphql
+
+    # from fields import userFields
 
     query GetViewer {
       viewer {
@@ -87,21 +105,16 @@ Schema definition
 Operations definition
 ---------------------
 
-The server needs to do **less processing** to parse the query and verify the parameters.
-
 **/app/documents/GetViewer.graphql**
 
 .. code:: graphql
+
+    # from fields import userFields
 
     query GetViewer {
       viewer {
         ...userFields
       }
-    }
-
-    fragment userFields on UserType {
-      id
-      email
     }
 
 
@@ -138,7 +151,7 @@ Here's a **list of settings** available in *Django-graphql-persist* and their de
 
 ::
 
-    A custom function `f(query_id, request)` to generate the persisted query key
+    A custom function `f(query_id, request)` to generate the persisted query keys
     Default: 'graphql_persist.query.query_key_handler'
 
 
