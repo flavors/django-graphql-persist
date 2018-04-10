@@ -29,7 +29,7 @@ class AcceptHeaderVersioning(BaseVersioning):
         return params.get(self.version_param, self.default_version)
 
     def get_version(self, request):
-        media_type = request.META.get('HTTP_ACCEPT', b'').encode()
+        media_type = request.META.get('HTTP_ACCEPT', '').encode('utf-8')
         version = self.parse_header(media_type)
 
         if hasattr(version, 'decode'):
