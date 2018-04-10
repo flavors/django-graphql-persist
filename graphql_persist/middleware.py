@@ -2,9 +2,12 @@ import json
 from collections import OrderedDict
 
 from graphene_django.views import GraphQLView
+from graphql.error import GraphQLSyntaxError
 
 from . import exceptions
-from .loaders.exceptions import DocumentDoesNotExist, DocumentSyntaxError
+from .loaders.exceptions import (
+    DocumentDoesNotExist, DocumentImportError,
+)
 from .parser import parse_json
 from .settings import persist_settings
 
@@ -31,8 +34,8 @@ class PersistMiddleware:
     def __call__(self, request):
         try:
             request.version = self.get_version(request)
-        except exceptions.GraphQLPersistError as err:
-            return exceptions.PersistResponseError(str(err))
+        except exceptions.GraphQLPersistError as e:
+            return exceptions.PersistResponseError(str(e))
 
         response = self.get_response(request)
 
@@ -59,12 +62,12 @@ class PersistMiddleware:
 
                 try:
                     document = self.loader.get_document(query_key)
-                except DocumentDoesNotExist as err:
-                    return exceptions.DocumentNotFound(str(err))
+                except DocumentDoesNotExist:
+                    return exceptions.DocumentNotFound(query_key)
                 try:
                     data['query'] = document.render()
-                except DocumentSyntaxError as err:
-                    return exceptions.DocumentSyntaxError(str(err))
+                except (DocumentImportError, GraphQLSyntaxError) as e:
+                    return exceptions.DocumentSyntaxError(str(e))
 
                 request.persisted_query = PersistedQuery(document, data)
                 request._body = json.dumps(data).encode()

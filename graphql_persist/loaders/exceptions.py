@@ -1,10 +1,10 @@
 
 class DocumentDoesNotExist(Exception):
-    """Document Does Not Exist"""
 
-
-class DocumentSyntaxError(Exception):
-
-    def __init__(self, query_key, syntax_error=None):
-        self.syntax_error = syntax_error
+    def __init__(self, query_key):
+        self.query_key = query_key
         return super().__init__(query_key)
+
+
+class DocumentImportError(Exception):
+    """Document Import Error"""

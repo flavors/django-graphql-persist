@@ -28,7 +28,4 @@ class DocumentNotFound(PersistResponseError):
 
 
 class DocumentSyntaxError(PersistResponseError):
-
-    def __init__(self, query_key):
-        message = _('Syntax Error on `{}`').format(query_key)
-        return super().__init__(message)
+    """Document Syntax Error"""
