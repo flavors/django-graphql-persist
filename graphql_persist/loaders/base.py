@@ -1,4 +1,7 @@
+from django.utils.functional import cached_property
+
 from graphql.language.parser import parse
+from graphql.language.printer import print_ast
 from graphql.language.source import Source
 
 from .exceptions import DocumentDoesNotExist
@@ -26,14 +29,13 @@ class Document:
     def render(self):
         return parse_document(self)
 
-    @property
+    @cached_property
     def definitions(self):
-        if not hasattr(self, '_definitions'):
-            self._definitions = {
-                d.name.value: d.loc.source.body
-                for d in self.ast.definitions
-            }
-        return self._definitions
+        self.ast = parse(self.render())
+        return {
+            definition.name.value: print_ast(definition)
+            for definition in self.ast.definitions
+        }
 
 
 class BaseLoader:
