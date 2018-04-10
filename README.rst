@@ -59,8 +59,8 @@ Loads documents from urls, according to ``DOCUMENTS_DIRS``.
 
     GRAPHQL_PERSIST = {
         'DOCUMENTS_DIRS': [
-            '/app/documents',
-            'https:// ... /documents',
+            '/app/documents',  # FilesystemLoader
+            'https:// ... /documents',  # URLLoader
         ],
     }
 
