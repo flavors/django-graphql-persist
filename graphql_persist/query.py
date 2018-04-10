@@ -3,7 +3,7 @@ import re
 __all__ = ['query_key_handler']
 
 
-versioning_regex = re.compile(r'\.(?!\d)', re.IGNORECASE)
+versioning_regex = re.compile(r'\.(?!\d)')
 
 
 def query_key_handler(query_id, request):
