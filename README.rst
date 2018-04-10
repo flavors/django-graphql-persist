@@ -55,16 +55,9 @@ Schema definition
 
 .. code:: graphql
 
-    query GetViewer {
-      viewer {
-        ...userFields
-      }
-    }
-
-    query GetUsers {
-      users {
-        ...userFields
-      }
+    fragment userFields on UserType {
+      id
+      email
     }
 
 **/app/documents/schema.graphql**
@@ -83,11 +76,6 @@ Schema definition
       users {
         ...userFields
       }
-    }
-
-    fragment userFields on UserType {
-      id
-      email
     }
 
 
