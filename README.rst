@@ -100,7 +100,7 @@ and define Pythonic imports prefixed with ``#``.
     }
 
 
-**Query by "id"**
+**Query by** ``id``
 
 .. code:: json
 
@@ -127,7 +127,7 @@ Operations definition
     }
 
 
-**Query by "operationName"**
+**Query by** ``operationName``
 
 .. code:: json
 
