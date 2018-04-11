@@ -186,7 +186,7 @@ Configure the versioning scheme and storage the GraphQL documents according to t
     │   └── basic/
     |   |     └── GetViewer.graphql
     |   └── fragments/
-    |         └── common.graphql
+    |         └── users.graphql
     └── v2/
         └── full/
         └── basic/
@@ -195,7 +195,7 @@ Configure the versioning scheme and storage the GraphQL documents according to t
 
 .. code:: graphql
 
-    # from ..fragments.common import userFields
+    # from ..fragments.users import userFields
 
     query GetViewer {
       viewer {
