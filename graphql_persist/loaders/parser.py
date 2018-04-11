@@ -9,14 +9,14 @@ __all__ = ['parse_document']
 import_regex = re.compile(r'#\s+from\s+(.*)\s+import\s+(.*)')
 
 
-def import_definitions(document, match):
+def import_definitions(origin, match):
     name, definitions = match.groups()
     path = name.lstrip('.')
     dots = len(name) - len(path)
-    query_key = document.origin.query_key[:-dots] + path.split('.')
+    query_key = origin.query_key[:-dots] + path.split('.')
 
     try:
-        imported = document.origin.loader.engine.get_document(query_key)
+        imported = origin.loader.engine.get_document(query_key)
     except DocumentDoesNotExist:
         msg = 'No document named `{}`'.format(query_key)
         raise DocumentImportError(msg)
@@ -33,6 +33,6 @@ def import_definitions(document, match):
 
 def parse_document(document):
     header = document.source.body[:document.ast.loc.start]
-    source = import_regex.sub(partial(import_definitions, document), header)
-    source += document.source.body[document.ast.loc.start:]
-    return source
+    origin = document.origin
+    source = import_regex.sub(partial(import_definitions, origin), header)
+    return source + document.source.body[document.ast.loc.start:]
