@@ -65,8 +65,8 @@ Loads documents from urls, according to ``DOCUMENTS_DIRS``.
     }
 
 
-Schema definition
------------------
+A. Schema definition
+--------------------
 
 You can split schemas into separate files...
 
@@ -111,8 +111,8 @@ and define Pythonic imports prefixed with ``#``.
     }
 
 
-Operations definition
----------------------
+B. Operations definition
+------------------------
 
 ``/app/documents/GetViewer.graphql``
 
@@ -137,7 +137,7 @@ Operations definition
     }
 
 
-👉 Versioning
+✋ Versioning
 -------------
 
 The versioning scheme is defined by the ``DEFAULT_VERSIONING_CLASS`` setting variable.
@@ -190,6 +190,18 @@ Configure the versioning scheme and storage the GraphQL documents according to t
     └── v2/
         └── full/
         └── basic/
+
+👉 ``/app/documents/v1/full/GetViewer.graphql``
+
+.. code:: graphql
+
+    # from ..fragments.common import userFields
+
+    query GetViewer {
+      viewer {
+        ...userFields
+      }
+    }
 
 
 Settings
