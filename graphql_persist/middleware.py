@@ -5,7 +5,7 @@ from graphene_django.views import GraphQLView
 from graphql.error import GraphQLSyntaxError
 
 from . import exceptions
-from .loaders.exceptions import DocumentDoesNotExist, DocumentImportError
+from .loaders import DocumentDoesNotExist, DocumentImportError
 from .parser import parse_json
 from .query import QueryKey
 from .settings import persist_settings
