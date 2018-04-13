@@ -1,0 +1,7 @@
+fragment typeFields on __Type {
+  name
+}
+
+fragment enumFields on __EnumValue {
+  description
+}
