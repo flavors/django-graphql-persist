@@ -50,7 +50,7 @@ class PersistMiddleware:
 
             try:
                 data = parse_json(request.body)
-            except json.JSONDecodeError:
+            except ValueError:
                 return None
 
             query_id = data.get('id', data.get('operationName'))
