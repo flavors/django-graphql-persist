@@ -8,7 +8,7 @@ versioning_regex = re.compile(r'\.(?!\d)')
 
 def query_key_handler(query_id, request):
     if request.version is None:
-        return query_id
+        return [query_id]
 
     versioning_prefix = versioning_regex.split(request.version)
     return versioning_prefix + [query_id]
