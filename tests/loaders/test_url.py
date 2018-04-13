@@ -1,5 +1,7 @@
 from unittest.mock import patch
 
+import requests
+
 from graphql_persist.loaders import DocumentDoesNotExist, URLLoader
 
 from ..decorators import override_persist_settings
@@ -24,6 +26,13 @@ class URLTests(LoadersTestsCase):
         self.assertIsInstance(origin.loader, URLLoader)
         self.assertEqual(origin.query_key, self.query_key)
         self.assertIn(self.path, origin.name)
+
+    @patch('requests.get', side_effect=requests.HTTPError())
+    @override_persist_settings(DOCUMENTS_DIRS=('https://example.com',))
+    def test_http_error(self, *args):
+
+        with self.assertRaises(DocumentDoesNotExist):
+            self.engine_class().get_document(self.query_key)
 
     @patch('requests.get', side_effect=lambda url: MockResponse('', 404))
     @override_persist_settings(DOCUMENTS_DIRS=('https://example.com',))
