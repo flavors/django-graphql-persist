@@ -85,7 +85,7 @@ Persisted Query definition
 
 You can split schemas into separate files...
 
-``/app/documents/fragments.graphql``
+``documents/fragments.graphql``
 
 .. code:: graphql
 
@@ -96,7 +96,7 @@ You can split schemas into separate files...
 
 and define Pythonic imports prefixed with ``#``.
 
-``/app/documents/GetViewer.graphql``
+``documents/GetViewer.graphql``
 
 .. code:: graphql
 
@@ -122,7 +122,7 @@ and define Pythonic imports prefixed with ``#``.
 Multiple Operations
 -------------------
 
-``/app/documents/users.graphql``
+``documents/users.graphql``
 
 .. code:: graphql
 
@@ -208,7 +208,7 @@ Configure the versioning scheme and storage the GraphQL documents according to t
         └── full/
         └── basic/
 
-👉 ``/app/documents/v1/full/GetViewer.graphql``
+👉 ``documents/v1/full/GetViewer.graphql``
 
 .. code:: graphql
 
