@@ -69,6 +69,12 @@ class MiddlewareTests(testcases.TestCase):
         self.assertEqual(document.origin.query_key._keys, ['schema'])
         self.assertEqual(document.source.body, request_body['query'])
 
+    def test_process_unknown_view(self):
+        request = self.factory.post('/')
+        result = self.middleware.process_view(request, None)
+
+        self.assertIsNone(result)
+
     def test_json_decode_error(self):
         request = self.factory.post('/', data='error')
         result = self.middleware.process_view(request, self.view_func)
