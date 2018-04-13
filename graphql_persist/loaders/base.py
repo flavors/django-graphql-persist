@@ -24,14 +24,20 @@ class Document:
     def __init__(self, source, origin=None):
         self.source = Source(source)
         self.origin = origin
-        self.ast = parse(self.source)
+
+    @property
+    def ast(self):
+        if not hasattr(self, '_ast'):
+            self._ast = parse(self.source)
+        return self._ast
 
     def render(self):
         return parse_document(self)
 
     @cached_property
     def definitions(self):
-        self.ast = parse(self.render())
+        self._ast = parse(self.render())
+
         return {
             definition.name.value: print_ast(definition)
             for definition in self.ast.definitions
