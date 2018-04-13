@@ -28,11 +28,14 @@ class QueryKey:
     def __getitem__(self, index):
         value = self._keys[index]
         if isinstance(index, slice):
-            return QueryKey(value)
+            return type(self)(value)
         return value
 
+    def __eq__(self, other):
+        return self._keys == other._keys
+
     def __add__(self, keys):
-        return QueryKey(self._keys + keys)
+        return type(self)(self._keys + keys)
 
     def __repr__(self):
         return list.__repr__(self._keys)
