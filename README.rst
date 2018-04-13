@@ -42,6 +42,8 @@ Loaders
 
 *Django-graphql-persist* searches for documents directories in a number of places, depending on your ``DEFAULT_LOADER_CLASSES`` variable.
 
+By default, *Django-graphql-persist* uses these document loaders:
+
 * **AppDirectoriesLoader**
 
 Loads documents from Django apps on the filesystem. For each app in ``INSTALLED_APPS``, the loader looks for a ``documents/`` subdirectory defined by ``APP_DOCUMENT_DIR`` variable.
@@ -54,7 +56,6 @@ Loads documents from the filesystem, according to ``DOCUMENTS_DIRS`` variable.
 
 Loads documents from urls, according to ``DOCUMENTS_DIRS``.
 
-
 .. code:: python
 
     GRAPHQL_PERSIST = {
@@ -64,9 +65,23 @@ Loads documents from urls, according to ``DOCUMENTS_DIRS``.
         ],
     }
 
+**Cached Loader**
 
-A. Schema definition
---------------------
+By default, the document system reads your documents every time they're rendered.
+
+Configure the ``CachedEngine`` engine for caching documents.
+
+
+.. code:: python
+
+    GRAPHQL_PERSIST = {
+        'DEFAULT_LOADER_ENGINE_CLASS': [
+            graphql_persist.loaders.CachedEngine',
+        ],
+    }
+
+Persisted Query definition
+--------------------------
 
 You can split schemas into separate files...
 
@@ -81,59 +96,61 @@ You can split schemas into separate files...
 
 and define Pythonic imports prefixed with ``#``.
 
-``/app/documents/schema.graphql``
-
-.. code:: graphql
-
-    # from fragments import userFields
-
-    query GetViewer {
-      viewer {
-        ...userFields
-      }
-    }
-
-    query GetUsers {
-      users {
-        ...userFields
-      }
-    }
-
-
-**Query by** ``id``
-
-.. code:: json
-
-    {
-      "id": "schema",
-      "operationName": "GetViewer",
-      "variables": {}
-    }
-
-
-B. Operations definition
-------------------------
-
 ``/app/documents/GetViewer.graphql``
 
 .. code:: graphql
 
     # from fragments import userFields
 
-    query GetViewer {
+    {
       viewer {
         ...userFields
       }
     }
 
 
-**Query by** ``operationName``
+**Persisted Query by** ``id``
 
 .. code:: json
 
     {
-      "operationName": "GetViewer",
+      "id": "GetViewer",
       "variables": {}
+    }
+
+
+Multiple Operations
+-------------------
+
+``/app/documents/users.graphql``
+
+.. code:: graphql
+
+    # from fragments import userFields
+
+    query GetViewer {
+      viewer {
+        ...userFields
+      }
+    }
+
+    query GetUsers($last: Int!) {
+      users(last: $last) {
+        ...userFields
+      }
+    }
+
+
+**Persisted Query by** ``id`` and ``operationName``
+
+.. code:: json
+
+    {
+      "id": "users",
+      "operationName": "GetUsers",
+      "variables": {
+        "last": 2
+      }
     }
 
 
@@ -155,11 +172,11 @@ This is the full **list of versioning classes**.
 +==========================+=====================================+
 |  AcceptHeaderVersioning  |  ``application/json; version=v1``   |
 +--------------------------+-------------------------------------+
-|   VendorTreeVersioning   | ``application/vnd.flavors.v1+json`` |
+|   VendorTreeVersioning   | ``application/vnd.example.v1+json`` |
 +--------------------------+-------------------------------------+
 | QueryParameterVersioning |          ``?version=v1``            |
 +--------------------------+-------------------------------------+
-|    HostNameVersioning    |         ``v1.flavors.com``          |
+|    HostNameVersioning    |         ``v1.example.com``          |
 +--------------------------+-------------------------------------+
 
 Configure the versioning scheme and storage the GraphQL documents according to the version.
@@ -172,7 +189,7 @@ Configure the versioning scheme and storage the GraphQL documents according to t
     Accept: application/json; version=v1.full
 
     {
-      "operationName": "GetViewer",
+      "id": "GetViewer",
       "variables": {}
     }
 
@@ -197,7 +214,7 @@ Configure the versioning scheme and storage the GraphQL documents according to t
 
     # from ..fragments.users import userFields
 
-    query GetViewer {
+    {
       viewer {
         ...userFields
       }
