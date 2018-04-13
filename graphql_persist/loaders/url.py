@@ -31,6 +31,7 @@ class URLLoader(BaseLoader):
                 URLValidator()(url)
             except ValidationError:
                 continue
+
             try:
                 response = requests.get(url)
             except requests.HTTPError:

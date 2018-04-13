@@ -48,6 +48,7 @@ class PersistMiddleware:
         if (hasattr(view_func, 'view_class') and
                 issubclass(view_func.view_class, GraphQLView) and
                 request.content_type == 'application/json'):
+
             try:
                 data = parse_json(request.body)
             except json.JSONDecodeError:
