@@ -24,7 +24,7 @@ class FilesystemTests(LoadersTestsCase):
         self.assertEqual(origin.query_key, self.query_key)
         self.assertIn(self.path, origin.name)
 
-    @patch('graphql_persist.loaders.filesystem.open')
+    @patch('builtins.open')
     @override_persist_settings(DOCUMENTS_DIRS=(documents_dir,))
     def test_document_does_not_exist(self, open_mock):
         open_mock.side_effect = FileNotFoundError()
