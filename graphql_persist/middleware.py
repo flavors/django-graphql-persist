@@ -1,5 +1,4 @@
 import json
-from collections import OrderedDict
 
 from graphene_django.views import GraphQLView
 from graphql.error import GraphQLSyntaxError
@@ -13,7 +12,7 @@ from .settings import persist_settings
 __all__ = ['PersistMiddleware']
 
 
-class PersistedQuery(OrderedDict):
+class PersistedQuery(dict):
 
     def __init__(self, document, data):
         super().__init__(data)
