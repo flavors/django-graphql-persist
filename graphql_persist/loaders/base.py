@@ -41,6 +41,7 @@ class Document:
         return {
             definition.name.value: print_ast(definition)
             for definition in self.ast.definitions
+            if definition.name is not None
         }
 
 
