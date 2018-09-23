@@ -7,11 +7,13 @@ versioning_regex = re.compile(r'\.(?!\d)')
 
 
 def query_key_handler(query_id, request):
+    query_key = query_id.split(':')
+
     if request.version is None:
-        return [query_id]
+        return query_key
 
     versioning_prefix = versioning_regex.split(request.version)
-    return versioning_prefix + [query_id]
+    return versioning_prefix + query_key
 
 
 class QueryKey:
