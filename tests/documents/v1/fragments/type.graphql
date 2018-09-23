@@ -1,0 +1,3 @@
+fragment typeFields on __Type {
+  name
+}

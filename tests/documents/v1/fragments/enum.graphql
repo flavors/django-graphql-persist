@@ -1,0 +1,3 @@
+fragment enumFields on __EnumValue {
+  description
+}

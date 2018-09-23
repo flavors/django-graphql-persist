@@ -1,7 +1,11 @@
-fragment typeFields on __Type {
-  name
-}
+# from .enum import enumFields
+# from .type import typeFields
 
-fragment enumFields on __EnumValue {
-  description
+fragment schemaFields on __Schema {
+    queryType {
+      ...typeFields
+      enumValues {
+        ...enumFields
+      }
+    }
 }

@@ -1,12 +1,7 @@
-# from ..fragments.schema import enumFields, typeFields
+# from ..fragments.schema import schemaFields
 
 {
   __schema {
-    queryType {
-      ...typeFields
-      enumValues {
-        ...enumFields
-      }
-    }
+    ...schemaFields
   }
 }
