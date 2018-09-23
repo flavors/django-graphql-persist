@@ -1,4 +1,3 @@
-# from .enum import enumFields
 # from .type import typeFields
 
 fragment schemaFields on __Schema {
