@@ -5,7 +5,7 @@ from graphql.error import GraphQLSyntaxError
 
 from . import exceptions
 from .loaders import DocumentDoesNotExist, DocumentImportError
-from .parser import parse_json
+from .parser import parse_body, parse_json
 from .query import QueryKey
 from .settings import persist_settings
 
@@ -45,12 +45,11 @@ class PersistMiddleware:
 
     def process_view(self, request, view_func, *args):
         if (hasattr(view_func, 'view_class') and
-                issubclass(view_func.view_class, GraphQLView) and
-                request.content_type == 'application/json'):
+                issubclass(view_func.view_class, GraphQLView)):
 
-            try:
-                data = parse_json(request.body)
-            except ValueError:
+            data = parse_body(request)
+
+            if data is None:
                 return None
 
             query_id = data.get('id', data.get('operationName'))
