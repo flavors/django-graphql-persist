@@ -20,5 +20,5 @@ def parse_body(request):
             'application/x-www-form-urlencoded',
             'multipart/form-data'):
 
-        return request.POST
+        return request.POST.copy()
     return None
