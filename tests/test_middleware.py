@@ -9,17 +9,20 @@ from graphene_django.views import GraphQLView
 
 from graphql_persist import exceptions, versioning
 from graphql_persist.middleware import PersistedQuery, PersistMiddleware
-from graphql_persist.parser import parse_json
+from graphql_persist.parser import parse_body, parse_json
 from graphql_persist.renderers import BaseRenderer
 from graphql_persist.settings import persist_settings
 
 from .decorators import override_persist_settings
 
 
-class JSONRequestFactory(RequestFactory):
+class VersioningRequestFactory(RequestFactory):
 
     def request(self, **request):
         return VersioningRequest(self._base_environ(**request))
+
+
+class JSONRequestFactory(VersioningRequestFactory):
 
     def post(self, path, data=None, *args, **kwargs):
         kwargs.setdefault('content_type', 'application/json')
@@ -62,12 +65,29 @@ class MiddlewareTests(testcases.TestCase):
         result = self.middleware.process_view(request, self.view_func)
         persisted_query = request.persisted_query
         document = persisted_query.document
-        request_body = parse_json(request._body)
+        body = parse_body(request)
 
         self.assertIsNone(result)
         self.assertEqual(persisted_query.id, 'schema')
         self.assertEqual(document.origin.query_key._keys, ['schema'])
-        self.assertEqual(document.source.body, request_body['query'])
+        self.assertEqual(document.source.body, body['query'])
+
+    @override_settings(INSTALLED_APPS=['tests'])
+    def test_process_view_x_www_form_urlencoded(self):
+        data = {
+            'id': 'schema',
+        }
+
+        request = VersioningRequestFactory().post('/', data=data)
+        result = self.middleware.process_view(request, self.view_func)
+        persisted_query = request.persisted_query
+        document = persisted_query.document
+        body = request.POST
+
+        self.assertIsNone(result)
+        self.assertEqual(persisted_query.id, 'schema')
+        self.assertEqual(document.origin.query_key._keys, ['schema'])
+        self.assertEqual(document.source.body, body['query'])
 
     def test_missing_id(self):
         request = self.factory.post('/', data={})
