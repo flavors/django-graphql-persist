@@ -67,7 +67,11 @@ class PersistMiddleware:
                     return exceptions.DocumentSyntaxError(str(e))
 
                 request.persisted_query = PersistedQuery(document, data)
-                request._body = json.dumps(data).encode()
+
+                if request.content_type == 'application/json':
+                    request._body = json.dumps(data).encode()
+                else:
+                    request.POST = data
         return None
 
     def get_query_key(self, query_id, request):
