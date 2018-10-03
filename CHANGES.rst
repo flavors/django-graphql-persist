@@ -1,6 +1,11 @@
 Changelog
 =========
 
+0.1.1
+-----
+
+* Supported multiple content types
+
 0.1.0
 -----
 
