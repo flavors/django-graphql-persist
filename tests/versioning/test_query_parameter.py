@@ -8,7 +8,7 @@ from .testcases import VersioningTestsCase
 class QueryParameterVersioningTests(VersioningTestsCase):
 
     def test_get_version(self):
-        request = self.factory.get('?{0}={1}'.format(
+        request = self.request_factory.get('?{0}={1}'.format(
             persist_settings.VERSION_PARAM,
             self.version),
         )
@@ -19,7 +19,7 @@ class QueryParameterVersioningTests(VersioningTestsCase):
         self.assertEqual(scheme_version, self.version)
 
     def test_default_version(self):
-        request = self.factory.get('/')
+        request = self.request_factory.get('/')
 
         scheme = versioning.QueryParameterVersioning()
         scheme.default_version = 'v2'
@@ -28,7 +28,7 @@ class QueryParameterVersioningTests(VersioningTestsCase):
         self.assertEqual(scheme_version, scheme.default_version)
 
     def test_version_not_allowed(self):
-        request = self.factory.get('?{0}={1}'.format(
+        request = self.request_factory.get('?{0}={1}'.format(
             persist_settings.VERSION_PARAM,
             self.version),
         )

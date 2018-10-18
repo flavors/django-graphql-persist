@@ -12,7 +12,7 @@ class VendorTreeVersioningTests(VersioningTestsCase):
             'application/vnd.test.{}+json'.format(self.version),
         }
 
-        request = self.factory.get('/', **headers)
+        request = self.request_factory.get('/', **headers)
 
         scheme = versioning.VendorTreeVersioning()
         scheme_version = scheme.get_version(request)
@@ -20,7 +20,7 @@ class VendorTreeVersioningTests(VersioningTestsCase):
         self.assertEqual(scheme_version, self.version)
 
     def test_default_version(self):
-        request = self.factory.get('/')
+        request = self.request_factory.get('/')
 
         scheme = versioning.VendorTreeVersioning()
         scheme.default_version = 'v2'
@@ -34,7 +34,7 @@ class VendorTreeVersioningTests(VersioningTestsCase):
             'application/vnd.test.{}+json'.format(self.version),
         }
 
-        request = self.factory.get('/', **headers)
+        request = self.request_factory.get('/', **headers)
 
         scheme = versioning.VendorTreeVersioning()
         scheme.allowed_versions = ('v2',)

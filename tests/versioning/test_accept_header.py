@@ -14,7 +14,7 @@ class AcceptHeaderVersioningTests(VersioningTestsCase):
                 self.version),
         }
 
-        request = self.factory.get('/', **headers)
+        request = self.request_factory.get('/', **headers)
 
         scheme = versioning.AcceptHeaderVersioning()
         scheme_version = scheme.get_version(request)
@@ -22,7 +22,7 @@ class AcceptHeaderVersioningTests(VersioningTestsCase):
         self.assertEqual(scheme_version, self.version)
 
     def test_default_version(self):
-        request = self.factory.get('/')
+        request = self.request_factory.get('/')
 
         scheme = versioning.AcceptHeaderVersioning()
         scheme.default_version = 'v2'
@@ -37,7 +37,7 @@ class AcceptHeaderVersioningTests(VersioningTestsCase):
                 self.version),
         }
 
-        request = self.factory.get('/', **headers)
+        request = self.request_factory.get('/', **headers)
 
         scheme = versioning.AcceptHeaderVersioning()
         scheme.allowed_versions = ('v2',)

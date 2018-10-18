@@ -14,7 +14,7 @@ class HostNameVersioningTests(VersioningTestsCase):
             'HTTP_HOST': '{}.example.com'.format(self.version),
         }
 
-        request = self.factory.get('/', **headers)
+        request = self.request_factory.get('/', **headers)
 
         scheme = versioning.HostNameVersioning()
         scheme_version = scheme.get_version(request)
@@ -22,7 +22,7 @@ class HostNameVersioningTests(VersioningTestsCase):
         self.assertEqual(scheme_version, self.version)
 
     def test_default_version(self):
-        request = self.factory.get('/')
+        request = self.request_factory.get('/')
 
         scheme = versioning.HostNameVersioning()
         scheme.default_version = 'v2'
@@ -36,7 +36,7 @@ class HostNameVersioningTests(VersioningTestsCase):
             'HTTP_HOST': '{}.example.com'.format(self.version),
         }
 
-        request = self.factory.get('/', **headers)
+        request = self.request_factory.get('/', **headers)
 
         scheme = versioning.HostNameVersioning()
         scheme.allowed_versions = ('v2',)

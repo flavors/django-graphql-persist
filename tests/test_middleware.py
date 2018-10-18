@@ -50,7 +50,7 @@ class Renderer(BaseRenderer):
 class MiddlewareTests(testcases.TestCase):
 
     def setUp(self):
-        self.factory = JSONRequestFactory()
+        self.request_factory = JSONRequestFactory()
         self.get_response_mock = Mock(return_value=JsonResponse({}))
         self.middleware = PersistMiddleware(self.get_response_mock)
         self.view_func = GraphQLView.as_view()
@@ -61,7 +61,7 @@ class MiddlewareTests(testcases.TestCase):
             'id': 'schema',
         }
 
-        request = self.factory.post('/', data=data)
+        request = self.request_factory.post('/', data=data)
         result = self.middleware.process_view(request, self.view_func)
         persisted_query = request.persisted_query
         document = persisted_query.document
@@ -90,19 +90,19 @@ class MiddlewareTests(testcases.TestCase):
         self.assertEqual(document.source.body, body['query'])
 
     def test_missing_id(self):
-        request = self.factory.post('/', data={})
+        request = self.request_factory.post('/', data={})
         result = self.middleware.process_view(request, self.view_func)
 
         self.assertIsNone(result)
 
     def test_process_unknown_view(self):
-        request = self.factory.post('/')
+        request = self.request_factory.post('/')
         result = self.middleware.process_view(request, None)
 
         self.assertIsNone(result)
 
     def test_json_decode_error(self):
-        request = self.factory.post('/', data='error')
+        request = self.request_factory.post('/', data='error')
         result = self.middleware.process_view(request, self.view_func)
 
         self.assertIsNone(result)
@@ -113,7 +113,7 @@ class MiddlewareTests(testcases.TestCase):
             'id': 'syntax_error',
         }
 
-        request = self.factory.post('/', data=data)
+        request = self.request_factory.post('/', data=data)
         result = self.middleware.process_view(request, self.view_func)
 
         self.assertIsInstance(result, exceptions.DocumentSyntaxError)
@@ -123,13 +123,13 @@ class MiddlewareTests(testcases.TestCase):
             'id': 'not-found',
         }
 
-        request = self.factory.post('/', data=data)
+        request = self.request_factory.post('/', data=data)
         result = self.middleware.process_view(request, self.view_func)
 
         self.assertIsInstance(result, exceptions.DocumentNotFound)
 
     def test_versioning_not_found(self):
-        request = self.factory.post('/')
+        request = self.request_factory.post('/')
         response = self.middleware(request)
 
         self.assertIsNone(request.version)
@@ -139,7 +139,7 @@ class MiddlewareTests(testcases.TestCase):
     def test_versioning_not_allowed(self):
         middleware = PersistMiddleware(self.get_response_mock)
 
-        request = self.factory.post('?{0}={1}'.format(
+        request = self.request_factory.post('?{0}={1}'.format(
             persist_settings.VERSION_PARAM,
             'not-allowed'),
         )
@@ -156,7 +156,7 @@ class MiddlewareTests(testcases.TestCase):
     )
     def test_finalize_response(self):
         middleware = PersistMiddleware(self.get_response_mock)
-        request = self.factory.post('/')
+        request = self.request_factory.post('/')
         request.persisted_query = PersistedQuery(None, {})
 
         response = middleware(request)
@@ -166,7 +166,7 @@ class MiddlewareTests(testcases.TestCase):
         self.assertTrue(data['test'])
 
     def test_response_content_length(self):
-        request = self.factory.post('/')
+        request = self.request_factory.post('/')
         content = '{}'
 
         response = HttpResponse(content)
