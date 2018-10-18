@@ -1,7 +1,7 @@
 import re
 
 from django.http.multipartparser import parse_header
-from django.utils.translation import ugettext_lazy as _
+from django.utils.translation import ugettext as _
 
 from . import exceptions
 from .settings import persist_settings
