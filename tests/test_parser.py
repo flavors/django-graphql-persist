@@ -5,7 +5,7 @@ from django.test import RequestFactory, testcases
 from graphql_persist import parser
 
 
-class ParserTests(testcases.TestCase):
+class ParseJSONTests(testcases.TestCase):
 
     def setUp(self):
         self.request_factory = RequestFactory()
@@ -19,7 +19,7 @@ class ParserTests(testcases.TestCase):
         result = parser.parse_body(request)
         self.assertTrue(result['test'])
 
-    def test_json_decode_error(self):
+    def test_decode_error(self):
         request = self.request_factory.post(
             '/',
             data='error',
@@ -27,6 +27,9 @@ class ParserTests(testcases.TestCase):
 
         result = parser.parse_body(request)
         self.assertIsNone(result)
+
+
+class ParseBodyTests(testcases.TestCase):
 
     def test_x_www_form_urlencoded(self):
         request = self.request_factory.post('/', data={'test': True})
