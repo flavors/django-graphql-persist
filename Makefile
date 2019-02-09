@@ -10,7 +10,6 @@ test:
 
 coverage:
 	@pytest\
-		--flake8\
 		--verbose\
 		--cov graphql_persist\
 		--cov-config .coveragerc\
